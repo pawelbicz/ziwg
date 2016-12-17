@@ -2,7 +2,6 @@ import flask, flask.views, linecache, os, functools, json
 from flask import g, request, render_template
 app = flask.Flask(__name__)
 print 'Flask name'
-# Don't do this!
 app.secret_key = "123"
 
 DATABASE = 'flask.json'
