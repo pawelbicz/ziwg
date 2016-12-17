@@ -1,0 +1,1 @@
+{'admin': 'admin', 'face': 'face', 'obserwator': 'obserwator', 'sedzia': 'sedzia', 'zawodnik': 'zawodnik'}

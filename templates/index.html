@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block body %}
+    <h1>Witamy w OBSERWATORze!</h1>
+    {% if 'username' in session %}
+        <p>Witam Cie {{session['username']}}!</p>
+            {% if 'admin' in session['username'] %}
+            <p> Zalogowales sie jako ADMIN </p>
+            <p> Jako administrator mozesz dodawac uzytkownikow, </p>
+            {% elif 'sedzia' in session['username']%}
+            <p> Mozesz sprawdzac czy wszystko przebiega poprawanie </p>
+            {% elif 'zawodnik' in session['username']%}
+            <p> Czlowieku biegnij !!! </p>
+            {% else %}
+            <p> Tutaj na bierzaco mozesz sprawdzac poczynania zawodnikow :) </p>
+            {% endif %}
+        <form action="{{url_for('index')}}" method="post">
+            <input type="submit" name="logout" value="Wyloguj" />
+        </form>
+    {% else %}
+        <p>Logowanie wymagane:</p>
+        <form action="{{url_for('index')}}" method="post">
+            <p>Login:<br />
+            <input type="text" name="username" /></p>
+            <p>Haslo:<br />
+            <input type="password" name="passwd" /></p>
+            <p><input type="submit" value="Zaloguj" /></p>
+        </form>
+        <form action="{{url_for('results')}}" method="post">
+            <input type="submit" name="gosc" value="Zaloguj sie jako gosc" />
+        </form>
+    {% endif %}
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+    {% endwith %}
+{% endblock %}

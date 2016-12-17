@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body %}
+  {% if 'admin' in session['username'] %}
+    <form action="{{ url_for('add') }}" method="post">
+      <dl>
+        <dt>Login:
+        <dd><input type=text size=20 name=login>
+        <dt>Haslo:
+        <dd><input type=text size=20 name=password>
+        <dd><input type=submit value=Zapisz>
+      </dl>
+    </form>
+    <form action="{{ url_for('add') }}" method="get">
+      <dl>
+        <dd><input type=submit name='userList' value='Wylistuj_uzytkownikow'/>
+      </dl>
+    </form>
+  {% endif %}
+
+{% endblock %}

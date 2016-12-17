@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block body %}
+    <form action="{{ url_for('stats') }}" method="post">
+      <dl>
+        <dt>Nazwa zawodnika:
+        <dd><input type=text size=20 name=title>
+        <dt>Wynik:
+        <dd><textarea name=text rows=5 cols=40></textarea>
+        <dd><input type=submit value=Zapisz_do_pliku>
+      </dl>
+    </form>
+  <ul class=entries>
+  {% for entry in entries %}
+    <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+  {% else %}
+    <li><em> Tutaj jeszcze nic nie ma </em>
+  {% endfor %}
+  </ul>
+{% endblock %}
