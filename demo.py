@@ -1,4 +1,4 @@
-import flask, flask.views, linecache, os, functools, json
+import flask, flask.views, linecache, os, functools, json, ConfigParser
 from flask import g, request, render_template
 from flask_mysqldb import MySQL
 
@@ -6,10 +6,12 @@ app = flask.Flask(__name__)
 print 'Flask name'
 app.secret_key = "123"
 
-app.config['MYSQL_MYSQL_USER'] = 'administrator'
-app.config['MYSQL_PASSWORD'] = 'gospodarka'
-app.config['MYSQL_DB'] = 'orient_bieg'
-app.config['MYSQL_HOST'] = 'localhost'
+config = ConfigParser.SafeConfigParser()
+config.read('/home/ziwg/config.ini')
+app.config['MYSQL_MYSQL_USER'] = config.get('KEY', 'user')
+app.config['MYSQL_PASSWORD'] = config.get('KEY', 'password')
+app.config['MYSQL_DB'] = config.get('KEY', 'database')
+app.config['MYSQL_HOST'] = config.get('KEY', 'host')
 mysql = MySQL(app)
 
 
