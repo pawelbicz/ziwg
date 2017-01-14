@@ -1,8 +1,29 @@
 import flask, flask.views, linecache, os, functools, json
 from flask import g, request, render_template
+from flask_mysqldb import MySQL
+
 app = flask.Flask(__name__)
 print 'Flask name'
 app.secret_key = "123"
+
+app.config['MYSQL_MYSQL_USER'] = 'administrator'
+app.config['MYSQL_PASSWORD'] = 'gospodarka'
+app.config['MYSQL_DB'] = 'orient_bieg'
+app.config['MYSQL_HOST'] = 'localhost'
+mysql = MySQL(app)
+
+
+@app.route('/odpytaj')
+def odpytaj():
+    conn = mysql.connection
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users LIMIT 1")    
+    rows = cursor.fetchall()
+    for row in rows:
+        print row
+    return str(rows)
+
+
 
 DATABASE = 'flask.json'
 users = {}
