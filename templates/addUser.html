@@ -7,14 +7,25 @@
         <dd><input type=text size=20 name=login>
         <dt>Haslo:
         <dd><input type=text size=20 name=password>
-        <dd><input type=submit value=Zapisz>
+        <dd><input type=submit name='addUser' value=Dodaj_uzytkownia>
+      </dl>
+            <dl>
+        <dt>Login:
+        <dd><input type=text size=20 name=login_to_removed>
+        <dd><input type=submit name='removeUser' value=Usun_uzytkownika>
       </dl>
     </form>
-    <form action="{{ url_for('add') }}" method="get">
+    <form action="{{ url_for('add') }}" method="post">
       <dl>
         <dd><input type=submit name='userList' value='Wylistuj_uzytkownikow'/>
       </dl>
     </form>
-  {% endif %}
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+    {% endwith %}
+
+    {% endif %}
 
 {% endblock %}

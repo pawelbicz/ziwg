@@ -1,3 +1,6 @@
 admin admin
 sedzia sedzia
 zawodnik zawodnik
+ 
+user user
+user user

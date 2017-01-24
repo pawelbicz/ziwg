@@ -1,18 +1,36 @@
 {% extends "base.html" %}
 {% block body %}
     <form action="{{ url_for('results') }}" method="post">
+      	<dt>raceName:
+        <dd><input type=text size=20 name=raceName>
+        <dt>userId:
+        <dd><input type=text size=20 name=userId>
+        <dt>start:
+        <dd><input type=text size=20 name=start>
+        <dt>cp1:
+        <dd><input type=text size=20 name=cp1>
+     	<dt>cp2:
+        <dd><input type=text size=20 name=cp2>
+        <dt>cp3:
+        <dd><input type=text size=20 name=cp3>
+	 <dt>cp4:
+        <dd><input type=text size=20 name=cp4>
+        <dt>stop:
+        <dd><input type=text size=20 name=stop>
       <dl>
-        <dd><input type=submit name=showResult value=Sprawdz_wyniki_zawodnkiow>
+        <dd><input type=submit name=addRace value=add_race>
+      </dl>
+        <dt>raceName:
+        <dd><input type=text size=20 name=raceName>
+       <dl>
+		<dd><input type=submit name=removeRace value=remove_race>
+	</dl>
       </dl>
     </form>
-  <ul class=entries>
-  {% for entry in entries %}
-    <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
-  {% endfor %}
-  </ul>
     {% with messages = get_flashed_messages() %}
         {% for message in messages %}
             {{message}}
         {% endfor %}
     {% endwith %}
 {% endblock %}
+

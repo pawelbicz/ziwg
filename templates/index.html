@@ -3,9 +3,9 @@
     <h1>Witamy w OBSERWATORze!</h1>
     {% if 'username' in session %}
         <p>Witam Cie {{session['username']}}!</p>
-            {% if 'admin' in session['username'] %}
+            {% if 'administrator' in session['username'] %}
             <p> Zalogowales sie jako ADMIN </p>
-            <p> Jako administrator mozesz dodawac uzytkownikow, </p>
+            <p> Jako administrator mozesz dodawac/usuwac uzytkownikow, </p>
             {% elif 'sedzia' in session['username']%}
             <p> Mozesz sprawdzac czy wszystko przebiega poprawanie </p>
             {% elif 'zawodnik' in session['username']%}
@@ -22,9 +22,9 @@
             <p>Login:<br />
             <input type="text" name="username" /></p>
             <p>Haslo:<br />
-            <input type="password" name="passwd" /></p>
+            <input type="password" name="password" /></p>
             <p><input type="submit" value="Zaloguj" /></p>
-        </form>
+	</form>
         <form action="{{url_for('results')}}" method="post">
             <input type="submit" name="gosc" value="Zaloguj sie jako gosc" />
         </form>

@@ -13,9 +13,10 @@
             <ul>
                 {% block nav %}{% endblock %}
                 <li><a href="{{url_for('index')}}">Powrot</a></li>
-                {% if 'admin' in session['username'] %}
-                <li><a href="{{url_for('add')}}">Dodaj uzytkownika</a></li>
-                <li><a href="{{url_for('stats')}}">Dodaj statystyki <gracza></gracza></a></li>
+                {% if 'administrator' in session['username'] %}
+                <li><a href="{{url_for('add')}}">Dodaj/Usun uzytkownika</a></li>
+		<li><a href="{{url_for('results')}}">Zarzadzanie wyscigami</a></li>
+		<li><a href="{{url_for('races')}}">Pokaz wyscigi</a></li>
                 {% endif %}
             </ul>
         </div>
