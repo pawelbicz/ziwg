@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+    <h2>Pokaz wyscigi</h2>
+    <form action="{{url_for('races')}}" method="post">
+	<dl>
+        <dd><input type=submit name=showRaceRaces value=show_name_races>
+        </dl>
+	<dt>raceName:
+        <dd><input type=text size=20 name=raceNameRaces>
+      <dl>
+        <dd><input type=submit name=raceNameToShowDesiredRace value=show_desired_race>
+      </dl>
+    </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            Wynik:
+            <pre>
+                {% for message in messages %}
+{{ message }}
+                {% endfor %}
+            </pre>
+        {% endif %}
+    {% endwith %}
+{% endblock %}
