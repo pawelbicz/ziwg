@@ -11,6 +11,11 @@ app = flask.Flask(__name__)
 print 'Flask name'
 app.secret_key = "123"
 
+
+
+########################################### DATABASE CONNETION ############################################
+
+
 config = ConfigParser.SafeConfigParser()
 config.read('/home/ziwg/config.ini')
 app.config['MYSQL_MYSQL_USER'] = config.get('KEY', 'user')
@@ -19,6 +24,9 @@ app.config['MYSQL_DB'] = config.get('KEY', 'database')
 app.config['MYSQL_HOST'] = config.get('KEY', 'host')
 mysql = MySQL(app)
 app.config['JSONIFY_PRETTYPRINT_REGULAR']
+
+
+########################################### INTERFACE PART ################################################
 
 @app.route('/test1', methods=['POST'])
 def test1():
@@ -44,7 +52,48 @@ def test4():
     showUsersInDatabase()
     return "Sru"
 
+@app.route('/addlogin', methods=['POST'])
+def addlogin():
+    content = request.json
+    conn = mysql.connection
+    cursor = conn.cursor()
+    msg = ( "INSERT INTO `users` (`user_username`,`user_password`) VALUES ("
+            +"'"+str(content['login'])+"','"+str(content['password'])+"'"+")"
+          )
 
+    print msg
+    cursor.execute(msg)
+    cursor.execute("SELECT * FROM users")
+    rows = cursor.fetchall()
+    for row in rows:
+        print row
+    login = {content['login']:content['password']}
+    return json.dumps(login, indent=4)
+
+@app.route('/json', methods=['POST'])
+def jsonTesting():
+    content = request.json
+    conn = mysql.connection
+    cursor = conn.cursor()
+    login = content['login']
+    password = content['password']
+    ifLoginCorrect = 0
+    cursor.execute("SELECT * FROM users")
+    rows = cursor.fetchall()
+    for row in rows:
+        if login == row[1] and password == row[2]:
+            ifLoginCorrect = 1
+    if ifLoginCorrect == 1:
+        return str(ifLoginCorrect)
+    else:
+        abort(401)
+        return str(ifLoginCorrect)
+
+
+
+########################################### INTERNAL MECHANISMS ###########################################
+
+ 
 def addUserToDatabase(login,password):
     print 'addUserToData'
     conn = mysql.connection
@@ -60,7 +109,11 @@ def addUserToDatabase(login,password):
         return "Nie dodano uzytkownika poniewaz jest juz w bazie"
     else:
         privileges = 0
-        mysqlCmd = "INSERT INTO `users` (`user_username`,`user_password`,`user_privileges`) VALUES ("+"'"+str(login)+"','"+str(password)+"','"+str(privileges)+"');"
+        mysqlCmd = ( "INSERT INTO `users`"
+                     "(`user_username`,`user_password`,`user_privileges`)"
+                     " VALUES ("
+                     "'"+str(login)+"','"+str(password)+"','"+str(privileges)+"');"
+                   ) 
         print mysqlCmd
         cursor.execute(mysqlCmd)
         cursor.execute("SELECT * FROM users")
@@ -126,7 +179,12 @@ def addInfoToRaceTable(name,userId,start,cp1,cp2,cp3,cp4,stop):
     print "Debug: wchodze do addInfoToRaceTable"    
     conn = mysql.connection
     cursor = conn.cursor()
-    mysqlCmd = "INSERT INTO `race` (`race_name`,`race_user_id`,`race_start`,`race_check_1`,`race_check_2`,`race_check_3`,`race_check_4`,`race_end`) VALUES ("+"'"+str(name)+"','"+str(userId)+"','"+str(start)+"','"+str(cp1)+"','"+str(cp2)+"','"+str(cp3)+"','"+str(cp4)+"','"+str(stop)+"')"
+    mysqlCmd = ("INSERT INTO `race` "
+                "(`race_name`,`race_user_id`,`race_start`,`race_check_1`,`race_check_2`,`race_check_3`,`race_check_4`,`race_end`) "
+                " VALUES (" + "'"
+                +str(name)+"','"+str(userId)+"','"+str(start)+"','"+str(cp1)+"','"+str(cp2)+"','"+str(cp3)+"','"
+                +str(cp4)+"','"+str(stop)+"')"
+               )
     print mysqlCmd
     cursor.execute(mysqlCmd)
     return "Dodano informacje do tablicy wyscigow"
@@ -167,45 +225,8 @@ def showDesiredRaceEntries(name):
     print listOfDesiredRaces
     return listOfDesiredRaces
 
-    
 
-
-
-@app.route('/addlogin', methods=['POST'])
-def addlogin():
-    content = request.json
-    conn = mysql.connection
-    cursor = conn.cursor()
-    msg = "INSERT INTO `users` (`user_username`,`user_password`) VALUES ("+"'"+str(content['login'])+"','"+str(content['password'])+"'"+")"
-    print msg
-    cursor.execute(msg)
-    cursor.execute("SELECT * FROM users")
-    rows = cursor.fetchall()
-    for row in rows:
-        print row
-    login = {content['login']:content['password']}
-    return json.dumps(login, indent=4)
-
-@app.route('/json', methods=['POST'])
-def jsonTesting():
-    content = request.json
-    conn = mysql.connection
-    cursor = conn.cursor()
-    login = content['login'] 
-    password = content['password']
-    ifLoginCorrect = 0
-    cursor.execute("SELECT * FROM users")
-    rows = cursor.fetchall()
-    for row in rows:
-        if login == row[1] and password == row[2]:
-            ifLoginCorrect = 1
-    if ifLoginCorrect == 1:
-        return str(ifLoginCorrect)
-    else:
-        abort(401)
-        return str(ifLoginCorrect)
-
-
+########################################### SITE METHODS AND LAYOUT  ######################################
 
 
 class Main(flask.views.MethodView):
