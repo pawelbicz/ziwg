@@ -1,24 +1,37 @@
 {% extends "base.html" %}
 {% block body %}
-    <h2>Pokaz wyscigi</h2>
-    <form action="{{url_for('races')}}" method="post">
-	<dl>
-        <dd><input type=submit name=showRaceRaces value=show_name_races>
+    <form action="{{ url_for('races') }}" method="post">
+      	<dt>raceName:
+        <dd><input type=text size=20 name=raceName required>
+        <dt>userId:
+        <dd><input type=text size=20 name=userId required>
+        <dt>start:
+        <dd><input type=text size=20 name=start required>
+        <dt>cp1:
+        <dd><input type=text size=20 name=cp1 required>
+     	<dt>cp2:
+        <dd><input type=text size=20 name=cp2 required>
+        <dt>cp3:
+        <dd><input type=text size=20 name=cp3 required>
+	 <dt>cp4:
+        <dd><input type=text size=20 name=cp4 required>
+        <dt>stop:
+        <dd><input type=text size=20 name=stop required>
+        <dl>
+        <dd><input type=submit name='addRace' value="Dodaj wyscig">
         </dl>
-	<dt>raceName:
-        <dd><input type=text size=20 name=raceNameRaces>
-      <dl>
-        <dd><input type=submit name=raceNameToShowDesiredRace value=show_desired_race>
-      </dl>
+	</form>
+	<form action="{{ url_for('races') }}" method="post">
+        <dt>raceName:
+        <dd><input type=text size=20 name=raceNameDelete required>
+       <dl>
+		<dd><input type=submit name=removeRace value="Usun wyscig">
+	</dl>
     </form>
     {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            Wynik:
-            <pre>
-                {% for message in messages %}
-{{ message }}
-                {% endfor %}
-            </pre>
-        {% endif %}
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
     {% endwith %}
 {% endblock %}
+

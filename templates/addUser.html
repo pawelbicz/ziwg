@@ -4,20 +4,22 @@
     <form action="{{ url_for('add') }}" method="post">
       <dl>
         <dt>Login:
-        <dd><input type=text size=20 name=login>
+        <dd><input type=text size=20 name=login required>
         <dt>Haslo:
-        <dd><input type=text size=20 name=password>
-        <dd><input type=submit name='addUser' value=Dodaj_uzytkownia>
-      </dl>
-            <dl>
+        <dd><input type=text size=20 name=password required>
+        <dd><input type=submit name='addUser' value="Dodaj uzytkownika">
+       </dl>
+    </form>
+    <form action="{{ url_for('add') }}" method="post">
+       <dl>
         <dt>Login:
-        <dd><input type=text size=20 name=login_to_removed>
-        <dd><input type=submit name='removeUser' value=Usun_uzytkownika>
+        <dd><input type=text size=20 name=login_to_removed required>
+        <dd><input type=submit name='removeUser' value="Usun uzytkownika">
       </dl>
     </form>
     <form action="{{ url_for('add') }}" method="post">
       <dl>
-        <dd><input type=submit name='userList' value='Wylistuj_uzytkownikow'/>
+        <dd><input type=submit name='userList' value="Wylistuj uzytkownikow">
       </dl>
     </form>
     {% with messages = get_flashed_messages() %}

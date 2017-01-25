@@ -15,8 +15,8 @@
                 <li><a href="{{url_for('index')}}">Powrot</a></li>
                 {% if 'administrator' in session['username'] %}
                 <li><a href="{{url_for('add')}}">Dodaj/Usun uzytkownika</a></li>
-		<li><a href="{{url_for('results')}}">Zarzadzanie wyscigami</a></li>
-		<li><a href="{{url_for('races')}}">Pokaz wyscigi</a></li>
+		<li><a href="{{url_for('races')}}">Zarzadzanie wyscigami</a></li>
+		<li><a href="{{url_for('results')}}">Pokaz wyscigi</a></li>
                 {% endif %}
             </ul>
         </div>

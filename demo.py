@@ -122,6 +122,54 @@ def showUsersInDatabase():
     print listOfUsers
     return listOfUsers
 
+def addInfoToRaceTable(name,userId,start,cp1,cp2,cp3,cp4,stop):
+    print "Debug: wchodze do addInfoToRaceTable"    
+    conn = mysql.connection
+    cursor = conn.cursor()
+    mysqlCmd = "INSERT INTO `race` (`race_name`,`race_user_id`,`race_start`,`race_check_1`,`race_check_2`,`race_check_3`,`race_check_4`,`race_end`) VALUES ("+"'"+str(name)+"','"+str(userId)+"','"+str(start)+"','"+str(cp1)+"','"+str(cp2)+"','"+str(cp3)+"','"+str(cp4)+"','"+str(stop)+"')"
+    print mysqlCmd
+    cursor.execute(mysqlCmd)
+    return "Dodano informacje do tablicy wyscigow"
+
+def removeRaceFromRaceTable(name):
+    print "Debug: wejscie do removeRaceFromRaceTable"
+    conn = mysql.connection
+    cursor = conn.cursor()
+    mysqlCmd = "DELETE FROM `race` WHERE race_name = "+"'"+str(name)+"'"
+    print mysqlCmd
+    cursor.execute(mysqlCmd)
+    return "Wyscig zostal usuniety"
+
+def showRacesEntries():
+    print "Debug: wejscie do showRacesNames"
+    conn = mysql.connection
+    cursor = conn.cursor()
+    listOfRaces = []
+    cursor.execute("SELECT * FROM `race`")
+    rows = cursor.fetchall()
+    for row in rows:
+        listOfRaces.append(row)
+        print row
+    print listOfRaces
+    return listOfRaces
+
+def showDesiredRaceEntries(name):
+    print "Debug: wejscie do showDesiredRaceEntry"
+    conn = mysql.connection
+    cursor = conn.cursor()
+    mysqlCmd = "SELECT * FROM `race` WHERE race_name = '"+str(name)+"'"
+    listOfDesiredRaces = []
+    cursor.execute(mysqlCmd)
+    rows = cursor.fetchall()
+    for row in rows:
+        listOfDesiredRaces.append(row)
+        print row
+    print listOfDesiredRaces
+    return listOfDesiredRaces
+
+    
+
+
 
 @app.route('/addlogin', methods=['POST'])
 def addlogin():
@@ -168,11 +216,6 @@ class Main(flask.views.MethodView):
         if 'logout' in flask.request.form:
             flask.session.pop('username', None)
             return flask.redirect(flask.url_for('index'))
-        # required = ['username', 'password']
-        # for r in required:
-        #     if r not in flask.request.form:
-        #         flask.flash("Error: {0} is required.".format(r))
-        #         return flask.redirect(flask.url_for('index'))
         username = flask.request.form['username']
         password = flask.request.form['password']
         ifLoginProperly = 0
@@ -220,10 +263,6 @@ class Add(flask.views.MethodView):
             for logins in loginList:
 		print logins 
                 flask.flash(logins+u'\r\n')
-            #flask.flash('Niedlugo wyswietlanie listy uzytkownik bedzie dostepne')
-        content = request.json
-        conn = mysql.connection
-        cursor = conn.cursor()
 	if 'addUser' in flask.request.form:
             username = flask.request.form['login']
             password = flask.request.form['password']
@@ -241,50 +280,60 @@ class Add(flask.views.MethodView):
             flask.flash(result)
         return render_template('addUser.html')
 
-#DATABASE="flask.json"
-
-class ShowRaces(flask.views.MethodView):
-     @login_required
-     def get(self):
-         return flask.render_template('races.html')
-
-     @login_required
-     def post(self):
-         return render_template('races.html')
-
-#class UserStats(flask.views.MethodView):
-#    @login_required
-#    def get(self):
-#        return flask.render_template('show_entries.html')
-
-#    @login_required
-#    def post(self):
-#        try:
-#            db = open(DATABASE).read()
-#        except IOError:
-#            db = '{"entries":[]}'
-#        g.db = json.loads(db)
-#        g.db['entries'].insert(0, {
-#        'title': request.form['title'],
-#        'text':request.form['text']
-#        })
-#        if hasattr(g,'db'):
-#            open(DATABASE, 'w').write(json.dumps(g.db, indent=4))
-#        return render_template('show_entries.html', entries=g.db['entries'])
 
 class ShowResults(flask.views.MethodView):
+     @login_required
+     def get(self):
+         print "Debug: get wejscie"
+         return flask.render_template('showResults.html')
+
+     @login_required
+     def post(self):        
+        print "Debug: post wejscie 1"
+        if 'showRaceRaces' in flask.request.form:
+            listOfRaces = showRacesEntries()
+           #flask.flash(str(usersList))
+            racesNameList = []
+            for race in listOfRaces:
+                racesNameList.append(race[1])
+            for raceName in racesNameList:
+                print raceName
+                flask.flash(raceName+u'\r\n')
+        if 'raceNameToShowDesiredRace' in flask.request.form:
+            raceNameRaces = flask.request.form['raceNameRaces']
+            listOfDesiredRaces = showDesiredRaceEntries(raceNameRaces)
+            for raceInfo in listOfDesiredRaces:
+                print raceInfo
+                flask.flash(str(raceInfo)+u'\r\n')
+        return render_template('showResults.html')
+
+class ManageRaces(flask.views.MethodView):
     def get(self):
-        return flask.render_template('showResults.html')
+        return flask.render_template('races.html')
 
     def post(self):
-        if 'showResult' in flask.request.form:
-            try:
-                db = open(DATABASE).read()
-            except IOError:
-                db = '{"entries":[]}'
-            g.db = json.loads(db)
-            return flask.render_template('showResults.html', entries=g.db['entries'])
-        return flask.render_template('showResults.html')
+        print "Debug: post wejscie 2"
+        if 'addRace' in flask.request.form:
+            print "Debug: post add race wejscie"
+            raceName = flask.request.form['raceName']
+            userId = flask.request.form['userId']
+            start = flask.request.form['start']
+            cp1 = flask.request.form['cp1']
+            cp2 = flask.request.form['cp2']
+            cp3 = flask.request.form['cp3']
+            cp4 = flask.request.form['cp4']
+            stop = flask.request.form['stop']
+            result = addInfoToRaceTable(raceName,userId,start,cp1,cp2,cp3,cp4,stop)
+            flask.flash(result)
+            print result
+        if 'removeRace' in flask.request.form:
+            print "Debug: post removeRace race wejscie"
+            raceNameDelete = flask.request.form['raceNameDelete']
+            result = removeRaceFromRaceTable(raceNameDelete)
+            flask.flash(result)
+        return flask.render_template('races.html')
+
+
 
 app.add_url_rule('/',
                  view_func=Main.as_view('index'),
@@ -293,7 +342,7 @@ app.add_url_rule('/add/',
                  view_func=Add.as_view('add'),
                  methods=['GET', 'POST',])
 app.add_url_rule('/races/',
-                 view_func=ShowRaces.as_view('races'),
+                 view_func=ManageRaces.as_view('races'),
                  methods=['GET', 'POST'])
 app.add_url_rule('/results/',
                  view_func=ShowResults.as_view('results'),

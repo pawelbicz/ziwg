@@ -1,36 +1,23 @@
 {% extends "base.html" %}
 {% block body %}
-    <form action="{{ url_for('results') }}" method="post">
-      	<dt>raceName:
-        <dd><input type=text size=20 name=raceName>
-        <dt>userId:
-        <dd><input type=text size=20 name=userId>
-        <dt>start:
-        <dd><input type=text size=20 name=start>
-        <dt>cp1:
-        <dd><input type=text size=20 name=cp1>
-     	<dt>cp2:
-        <dd><input type=text size=20 name=cp2>
-        <dt>cp3:
-        <dd><input type=text size=20 name=cp3>
-	 <dt>cp4:
-        <dd><input type=text size=20 name=cp4>
-        <dt>stop:
-        <dd><input type=text size=20 name=stop>
+    <h2>Pokaz wyscigi</h2>
+    <form action="{{url_for('results')}}" method="post">
+	<dl>
+        <dd><input type=submit name=showRaceRaces value="Pokaz wyscigi">
+        </dl>
+	</form>
+	<form action="{{url_for('results')}}" method="post">
+	<dt>raceName:
+        <dd><input type=text size=20 name=raceNameRaces required>
       <dl>
-        <dd><input type=submit name=addRace value=add_race>
-      </dl>
-        <dt>raceName:
-        <dd><input type=text size=20 name=raceName>
-       <dl>
-		<dd><input type=submit name=removeRace value=remove_race>
-	</dl>
+        <dd><input type=submit name=raceNameToShowDesiredRace value="Pokaz szczegoly wyscigow">
       </dl>
     </form>
     {% with messages = get_flashed_messages() %}
-        {% for message in messages %}
-            {{message}}
-        {% endfor %}
+        {% if messages %}
+                {% for message in messages %}
+{{ message }}
+                {% endfor %}
+        {% endif %}
     {% endwith %}
 {% endblock %}
-
