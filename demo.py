@@ -1,11 +1,10 @@
-import flask, flask.views, linecache, os, functools, json, ConfigParser, werkzeug
+import flask, flask.views, linecache, os, functools, json, ConfigParser, werkzeug, collections
 from flask import g, request, render_template, jsonify
 from flask_mysqldb import MySQL
 from werkzeug import BaseRequest, responder
 from werkzeug.wrappers import BaseRequest
 from werkzeug.wsgi import responder
 from werkzeug.exceptions import HTTPException, NotFound, Unauthorized, abort
-
 
 app = flask.Flask(__name__)
 print 'Flask name'
@@ -28,66 +27,25 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR']
 
 ########################################### INTERFACE PART ################################################
 
-@app.route('/test1', methods=['POST'])
-def test1():
-    content = request.json
-    addUserToDatabase(str(content['login']),str(content['password']))
-    return "Sru"
+@app.route('/applogin', methods=['POST'])
+def applogin():
+    appRequest = request.json
+    checkIfUserIsInDatabase(str(appRequest['login']),str(appRequest['password']))
+    return "Flask #1: Pomyslnie zalogowano do bazy"
 
-@app.route('/test2', methods=['POST'])
-def test2():
-    content = request.json
-    removeUserToDatabase(str(content['login']))
-    return "Sru"
-
-
-@app.route('/test3', methods=['POST'])
-def test3():
-    content = request.json
-    checkIfUserIsInDatabase(str(content['login']),str(content['password']))
-    return "Sru"
-
-@app.route('/test4', methods=['POST'])
-def test4():
-    showUsersInDatabase()
-    return "Sru"
-
-@app.route('/addlogin', methods=['POST'])
-def addlogin():
-    content = request.json
-    conn = mysql.connection
-    cursor = conn.cursor()
-    msg = ( "INSERT INTO `users` (`user_username`,`user_password`) VALUES ("
-            +"'"+str(content['login'])+"','"+str(content['password'])+"'"+")"
-          )
-
-    print msg
-    cursor.execute(msg)
-    cursor.execute("SELECT * FROM users")
-    rows = cursor.fetchall()
-    for row in rows:
-        print row
-    login = {content['login']:content['password']}
-    return json.dumps(login, indent=4)
-
-@app.route('/json', methods=['POST'])
-def jsonTesting():
-    content = request.json
-    conn = mysql.connection
-    cursor = conn.cursor()
-    login = content['login']
-    password = content['password']
-    ifLoginCorrect = 0
-    cursor.execute("SELECT * FROM users")
-    rows = cursor.fetchall()
-    for row in rows:
-        if login == row[1] and password == row[2]:
-            ifLoginCorrect = 1
-    if ifLoginCorrect == 1:
-        return str(ifLoginCorrect)
-    else:
-        abort(401)
-        return str(ifLoginCorrect)
+@app.route('/appshowraces', methods=['POST'])
+def appshowraces():
+    listOfRaces = showRacesEntries()
+    records = []        
+    for race in listOfRaces:
+        dictionary = collections.OrderedDict()
+        dictionary['name'] = race[1]
+        dictionary['userId'] = str(race[2])
+        records.append(dictionary)
+    result = json.dumps(records, indent=4)
+    result = result.replace("[","{").replace("]","}")
+    print result
+    return result
 
 
 
@@ -157,7 +115,7 @@ def checkIfUserIsInDatabase(login,password):
         return True
     else:
         print "Debug: uzytkownika nie ma"
-        abort(401)
+        abort(401, "Flask #2: Niepoprawne dane uzytkownika")
         return False
 
 def listRaceTableFromDatabase():
